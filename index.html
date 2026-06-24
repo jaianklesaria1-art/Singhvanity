@@ -1362,6 +1362,12 @@
 
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
+    /* Scrolls away with the page on mobile instead of staying pinned. */
+    nav {
+      position: static; top: auto; left: auto; transform: none;
+      width: 100%; max-width: none; border-radius: 0;
+      will-change: auto;
+    }
     .contact-layout { grid-template-columns: 1fr; gap: 48px; }
     .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
     .steps { grid-template-columns: repeat(2,1fr); gap: 36px; }
