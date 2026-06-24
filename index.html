@@ -395,6 +395,10 @@
   }
   .section-title { font-size: clamp(2rem, 4vw, 3rem); color: var(--primary); margin-bottom: 16px; line-height: 1.2; }
   .section-sub { font-size: 1.15rem; color: var(--muted); max-width: 560px; line-height: 1.72; }
+  @media (max-width: 480px) {
+    .section-title { font-size: 1.7rem; }
+    .section-sub { font-size: 0.95rem; }
+  }
 
   /* ── SERVICES ── */
   #services { background: var(--white); }
@@ -738,7 +742,10 @@
   .fleet-lamp-content .fleet-overline { justify-content: center; }
   .fleet-lamp-content .fleet-head-sub { text-align: center; margin: 0 auto; }
   @media (max-width: 640px) {
-    .fleet-lamp-content { margin-top: 160px; }
+    /* .fleet-lamp-stage is scaleY(1.25) from top center, so the line's
+       effective rendered position is 148px * 1.25 = 185px, not 148px.
+       margin-top must clear that scaled position, not the raw CSS value. */
+    .fleet-lamp-content { margin-top: 210px; }
     .flamp-line { width: 200px !important; }
     .flamp-beam { width: 200px !important; }
   }
@@ -1216,8 +1223,17 @@
   @media (max-width: 920px) {
     .img-reveal-stage { transform: scale(0.65); transform-origin: center top; height: 228px; }
   }
-  @media (max-width: 560px) {
-    .img-reveal-stage { transform: scale(0.42); height: 150px; }
+  /* Below 600px the fanned/rotated absolute-position layout gets too cramped
+     to size reliably across devices — switch to a plain responsive grid. */
+  @media (max-width: 600px) {
+    .img-reveal-stage {
+      transform: none; width: 100%; height: auto;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    }
+    .img-reveal-card {
+      position: static; opacity: 1 !important; transform: none !important;
+      width: 100%; height: auto; aspect-ratio: 3/4;
+    }
   }
 
   /* ── ANIMATIONS ── */
@@ -2544,11 +2560,21 @@
        these landscape interior shots. Use "contain" there so the full van
        stays visible; desktop/landscape viewports keep the full-bleed cover. */
     var isNarrow = canvas.width < 700 || canvas.height > canvas.width;
-    var s = isNarrow
-      ? Math.min(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight)
-      : Math.max(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight);
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.drawImage(img,(canvas.width-img.naturalWidth*s)/2,(canvas.height-img.naturalHeight*s)/2,img.naturalWidth*s,img.naturalHeight*s);
+    if (isNarrow) {
+      /* Fill the letterbox bars with a blurred, cover-fit copy of the same
+         frame instead of flat black, so there's no dead space top/bottom. */
+      var bs = Math.max(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight) * 1.15;
+      ctx.save();
+      ctx.filter = 'blur(28px) brightness(0.55)';
+      ctx.drawImage(img,(canvas.width-img.naturalWidth*bs)/2,(canvas.height-img.naturalHeight*bs)/2,img.naturalWidth*bs,img.naturalHeight*bs);
+      ctx.restore();
+      var s = Math.min(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight);
+      ctx.drawImage(img,(canvas.width-img.naturalWidth*s)/2,(canvas.height-img.naturalHeight*s)/2,img.naturalWidth*s,img.naturalHeight*s);
+    } else {
+      var s2 = Math.max(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight);
+      ctx.drawImage(img,(canvas.width-img.naturalWidth*s2)/2,(canvas.height-img.naturalHeight*s2)/2,img.naturalWidth*s2,img.naturalHeight*s2);
+    }
   }
 
   var panels = [
