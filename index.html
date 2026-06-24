@@ -55,7 +55,8 @@
   .footer-logo-img:hover { filter: brightness(1.05) drop-shadow(0 4px 16px rgba(212,160,23,0.25)); }
 
   nav {
-    position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+    position: fixed; top: 16px; left: 50%;
+    transform: translateX(-50%) translateZ(0);
     width: calc(100% - 48px); max-width: 1200px;
     background: transparent;
     border: none;
@@ -63,6 +64,7 @@
     display: flex; align-items: center; justify-content: space-between;
     z-index: 1000; box-shadow: 0 4px 32px rgba(26,18,8,0.07);
     transition: box-shadow 0.3s, background 0.3s;
+    will-change: transform;
   }
   nav.scrolled { /* no bg change */ }
   nav.dark-mode {
@@ -159,7 +161,11 @@
   }
   #story-1 { height: 380vh; }
   .story-sticky {
-    position: sticky; top: 0; height: 100vh; overflow: hidden; background: #060402;
+    position: sticky; top: 0; height: 100vh; overflow: hidden;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 0%, rgba(212,160,23,0.16) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 45% at 50% 100%, rgba(212,160,23,0.08) 0%, transparent 65%),
+      #060402;
   }
   .story-canvas {
     position: absolute; inset: 0; width: 100%; height: 100%; display: block;
@@ -623,6 +629,7 @@
   }
   .lb-close:hover { background: rgba(255,255,255,0.14); color: #fff; }
   .lb-stage {
+    position: relative;
     display: flex; align-items: center; gap: 20px;
     flex: 1; width: 100%; padding: 72px 24px 16px; justify-content: center;
   }
@@ -653,6 +660,23 @@
   }
   .lb-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .lb-thumb.active, .lb-thumb:hover { border-color: var(--gold); transform: translateY(-2px); }
+  @media (max-width: 600px) {
+    .lb-topbar { padding: 14px 16px; }
+    .lb-van-name { font-size: 0.85rem; }
+    .lb-counter { font-size: 0.68rem; }
+    .lb-close { top: 12px; right: 14px; width: 34px; height: 34px; font-size: 1rem; }
+    .lb-stage { padding: 60px 10px 10px; gap: 0; }
+    .lb-img { max-width: calc(100vw - 24px); max-height: calc(100vh - 200px); }
+    .lb-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%); z-index: 11;
+      width: 38px; height: 38px; font-size: 0.85rem;
+      background: rgba(4,3,2,0.6);
+    }
+    .lb-arrow:first-of-type { left: 4px; }
+    .lb-arrow:last-of-type { right: 4px; }
+    .lb-thumbstrip { padding: 8px 12px 16px; gap: 5px; }
+    .lb-thumb { width: 52px; height: 38px; }
+  }
 
 
   /* ── Marquee ── */
@@ -1354,7 +1378,7 @@
   /* ── MOBILE MENU ── */
   .mobile-menu {
     display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(6,4,2,0.98); z-index: 999; flex-direction: column;
+    background: rgba(6,4,2,0.98); z-index: 1001; flex-direction: column;
     align-items: center; justify-content: center; gap: 32px;
   }
   .mobile-menu.open { display: flex; animation: fadeIn 0.3s ease; }
@@ -2562,13 +2586,9 @@
     var isNarrow = canvas.width < 700 || canvas.height > canvas.width;
     ctx.clearRect(0,0,canvas.width,canvas.height);
     if (isNarrow) {
-      /* Fill the letterbox bars with a blurred, cover-fit copy of the same
-         frame instead of flat black, so there's no dead space top/bottom. */
-      var bs = Math.max(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight) * 1.15;
-      ctx.save();
-      ctx.filter = 'blur(28px) brightness(0.55)';
-      ctx.drawImage(img,(canvas.width-img.naturalWidth*bs)/2,(canvas.height-img.naturalHeight*bs)/2,img.naturalWidth*bs,img.naturalHeight*bs);
-      ctx.restore();
+      /* Leave the letterbox margins transparent so .story-sticky's gold-glow
+         gradient (matching the Fleet header's lamp motif) shows through,
+         instead of filling them with a blurred, grey-looking photo copy. */
       var s = Math.min(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight);
       ctx.drawImage(img,(canvas.width-img.naturalWidth*s)/2,(canvas.height-img.naturalHeight*s)/2,img.naturalWidth*s,img.naturalHeight*s);
     } else {
