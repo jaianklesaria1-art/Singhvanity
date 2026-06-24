@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Singh Vanity — Full Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --gold: #D4A017; --bg: #060402; }
+    html { font-size: 15px; }
+    html, body { background: var(--bg); color: #fff; font-family: 'Manrope', sans-serif; overflow: hidden; height: 100%; width: 100%; }
+
+    /* ── Header ── */
+    .g-header {
+      position: fixed; top: 0; left: 0; right: 0; height: 56px; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px;
+      background: rgba(6,4,2,0.85); backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(212,160,23,0.12);
+    }
+    .g-back {
+      display: flex; align-items: center; gap: 8px;
+      color: rgba(255,255,255,0.6); text-decoration: none;
+      font-size: 0.8rem; font-weight: 500; letter-spacing: 0.2px;
+      transition: color 0.2s;
+    }
+    .g-back:hover { color: var(--gold); }
+    .g-back svg { width: 15px; height: 15px; }
+    .g-title { font-family: 'Marcellus', serif; font-size: 0.95rem; color: #fff; letter-spacing: 1px; }
+    .g-hint { font-size: 0.68rem; color: rgba(255,255,255,0.25); letter-spacing: 1.5px; text-transform: uppercase; }
+
+    /* ── Gallery container ── */
+    #gallery-root { position: fixed; top: 56px; left: 0; right: 0; bottom: 0; }
+
+    /* ── Loading screen ── */
+    #g-loader {
+      position: absolute; inset: 0; z-index: 100;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: var(--bg); gap: 20px;
+      transition: opacity 0.6s ease;
+    }
+    #g-loader.hidden { opacity: 0; pointer-events: none; }
+    .g-loader-logo { font-family: 'Marcellus', serif; font-size: 1.4rem; color: #fff; letter-spacing: 3px; }
+    .g-loader-logo span { color: var(--gold); }
+    .g-loader-bar { width: 180px; height: 2px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+    .g-loader-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--gold), #B91C1C); border-radius: 2px; transition: width 0.1s; }
+    .g-loader-text { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+
+    /* ════════════════════════════════════════
+       DOME GALLERY CSS (ported from React component)
+    ════════════════════════════════════════ */
+    .sphere-root {
+      position: relative; width: 100%; height: 100%;
+      --radius: 520px;
+      --viewer-pad: 72px;
+      --circ: calc(var(--radius) * 3.14159);
+      --rot-y: calc((360deg / var(--segs)) / 2);
+      --rot-x: calc((360deg / var(--segs)) / 2);
+      --item-width: calc(var(--circ) / var(--segs));
+      --item-height: calc(var(--circ) / var(--segs));
+      --overlay-blur-color: #060402;
+      --tile-radius: 20px;
+      --enlarge-radius: 20px;
+      --image-filter: grayscale(1);
+    }
+    .sphere-root * { box-sizing: border-box; }
+
+    .sphere, .item, .item__image { transform-style: preserve-3d; }
+
+    main.sphere-main {
+      position: absolute; inset: 0;
+      display: grid; place-items: center;
+      overflow: hidden;
+      touch-action: none; user-select: none; -webkit-user-select: none;
+      background: transparent; cursor: grab;
+    }
+    main.sphere-main:active { cursor: grabbing; }
+
+    .stage {
+      width: 100%; height: 100%;
+      display: grid; place-items: center;
+      perspective: calc(var(--radius) * 2);
+      perspective-origin: 50% 50%;
+      contain: layout paint size;
+    }
+
+    .sphere { transform: translateZ(calc(var(--radius) * -1)); will-change: transform; }
+
+    .overlay, .overlay--blur {
+      position: absolute; inset: 0; margin: auto; z-index: 3; pointer-events: none;
+    }
+    .overlay {
+      background-image: radial-gradient(rgba(6,4,2,0) 60%, var(--overlay-blur-color) 100%);
+    }
+    .overlay--blur {
+      -webkit-mask-image: radial-gradient(rgba(6,4,2,0) 65%, var(--overlay-blur-color) 88%);
+      mask-image: radial-gradient(rgba(6,4,2,0) 65%, var(--overlay-blur-color) 88%);
+      backdrop-filter: blur(3px);
+    }
+
+    .item {
+      width: calc(var(--item-width) * var(--sz-x, 2));
+      height: calc(var(--item-height) * var(--sz-y, 2));
+      position: absolute;
+      top: -999px; bottom: -999px; left: -999px; right: -999px;
+      margin: auto;
+      transform-origin: 50% 50%;
+      backface-visibility: hidden;
+      transition: transform 300ms;
+      transform:
+        rotateY(calc(var(--rot-y) * (var(--ox) + ((var(--sz-x,2) - 1) / 2)) + var(--ryd, 0deg)))
+        rotateX(calc(var(--rot-x) * (var(--oy) - ((var(--sz-y,2) - 1) / 2)) + var(--rxd, 0deg)))
+        translateZ(var(--radius));
+    }
+
+    .item__image {
+      position: absolute; display: block; inset: 8px;
+      border-radius: var(--tile-radius, 20px);
+      background: #1a1208; overflow: hidden;
+      backface-visibility: hidden;
+      transition: transform 300ms;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation; pointer-events: auto;
+      transform: translateZ(0);
+    }
+    .item__image img {
+      width: 100%; height: 100%; object-fit: cover;
+      pointer-events: none; backface-visibility: hidden;
+      filter: var(--image-filter, grayscale(1));
+      transition: filter 0.35s ease;
+    }
+    .item__image:hover img { filter: none; }
+
+    .viewer {
+      position: absolute; inset: 0; z-index: 20;
+      pointer-events: none;
+      display: flex; align-items: center; justify-content: center;
+      padding: var(--viewer-pad, 72px);
+    }
+    .viewer .frame {
+      height: 100%; aspect-ratio: 1;
+      border-radius: var(--enlarge-radius, 20px); display: flex;
+    }
+    @media (max-aspect-ratio: 1/1) { .viewer .frame { height: auto; width: 100%; } }
+
+    .viewer .scrim {
+      position: absolute; inset: 0; z-index: 10;
+      background: rgba(0,0,0,0.52);
+      pointer-events: none; opacity: 0;
+      transition: opacity 500ms ease;
+      backdrop-filter: blur(4px);
+    }
+    .sphere-root[data-enlarging='true'] .viewer .scrim {
+      opacity: 1; pointer-events: all;
+    }
+
+    .viewer .enlarge {
+      position: absolute; z-index: 30;
+      border-radius: var(--enlarge-radius, 20px); overflow: hidden;
+      transition: transform 300ms ease, opacity 300ms ease;
+      transform-origin: top left;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(212,160,23,0.18);
+    }
+    .viewer .enlarge img {
+      width: 100%; height: 100%; object-fit: cover; filter: none;
+    }
+
+    .edge-fade {
+      position: absolute; left: 0; right: 0; height: 130px;
+      z-index: 5; pointer-events: none;
+      background: linear-gradient(to bottom, transparent, var(--overlay-blur-color));
+    }
+    .edge-fade--top { top: 0; transform: rotate(180deg); }
+    .edge-fade--bottom { bottom: 0; }
+
+    .dg-scroll-lock { overflow: hidden !important; }
+
+    @media (max-width: 600px) {
+      .g-header { padding: 0 16px; }
+      .g-title, .g-hint { display: none; }
+      .g-back-text { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="g-header">
+    <a href="index.html" class="g-back" id="galleryBackLink">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      <span class="g-back-text">Back to Singh Vanity</span>
+    </a>
+    <script>
+      (function() {
+        var ret = new URLSearchParams(window.location.search).get('ret');
+        if (ret !== null) document.getElementById('galleryBackLink').href = 'index.html?scroll=' + ret;
+      })();
+    </script>
+    <div class="g-title">Singh Vanity &mdash; Gallery</div>
+    <div class="g-hint">Drag &middot; Spin &middot; Click</div>
+  </header>
+
+  <!-- Gallery root -->
+  <div id="gallery-root">
+    <!-- Loader -->
+    <div id="g-loader">
+      <div class="g-loader-logo">Singh <span>Vanity</span></div>
+      <div class="g-loader-bar"><div class="g-loader-fill" id="g-fill"></div></div>
+      <div class="g-loader-text" id="g-loader-text">Loading Gallery&hellip;</div>
+    </div>
+  </div>
+
+<script>
+/* ════════════════════════════════════════════════════════
+   DomeGallery — vanilla JS port of the React component
+   Original: reactbits.dev/r/DomeGallery-TS-CSS
+════════════════════════════════════════════════════════ */
+
+const CFG = {
+  segments: 34,
+  fit: 0.8,
+  minRadius: 600,
+  maxRadius: Infinity,
+  padFactor: 0.25,
+  overlayBlurColor: '#060402',
+  maxVerticalRotationDeg: 0,
+  dragSensitivity: 20,
+  enlargeTransitionMs: 300,
+  dragDampening: 2,
+  openedImageWidth: '440px',
+  openedImageHeight: '440px',
+  imageBorderRadius: '20px',
+  openedImageBorderRadius: '20px',
+  grayscale: false
+};
+
+/* ── All Singh Vanity photos ── */
+const ALL_IMAGES = [
+  { src: 'photos/v1.png',  alt: 'Vanity van interior' },
+  { src: 'photos/v2.png',  alt: 'Luxury van' },
+  { src: 'photos/v3.png',  alt: 'Celebrity vanity van' },
+  { src: 'photos/v4.png',  alt: 'Van interior detail' },
+  { src: 'photos/v5.png',  alt: 'Vanity van setup' },
+  { src: 'photos/v6.png',  alt: 'Van exterior' },
+  { src: 'photos/v7.png',  alt: 'Luxury interior' },
+  { src: 'photos/v8.png',  alt: 'Mobile toilet van' },
+  { src: 'photos/v9.png',  alt: 'Van detail' },
+  { src: 'photos/v10.png', alt: 'Premium van' },
+  { src: 'photos/v11.png', alt: 'Van interior' },
+  { src: 'photos/v12.png', alt: 'Vanity van detail' },
+  { src: 'photos/l1.png',  alt: 'Luxury interior 1' },
+  { src: 'photos/l2.png',  alt: 'Luxury interior 2' },
+  { src: 'photos/l3.png',  alt: 'Luxury interior 3' },
+  { src: 'photos/l4.png',  alt: 'Luxury interior 4' },
+  { src: 'photos/l5.png',  alt: 'Luxury interior 5' },
+  { src: 'photos/l6.png',  alt: 'Luxury interior 6' },
+  { src: 'photos/l7.png',  alt: 'Luxury interior 7' },
+  { src: 'photos/l8.png',  alt: 'Luxury interior 8' },
+  { src: 'photos/l9.png',  alt: 'Luxury interior 9' },
+  { src: 'photos/l10.png', alt: 'Luxury interior 10' },
+  { src: 'photos/l11.png', alt: 'Luxury interior 11' },
+  { src: 'photos/l12.png', alt: 'Luxury interior 12' },
+  { src: 'photos/l13.png', alt: 'Luxury interior 13' },
+  { src: 'photos/l14.png', alt: 'Luxury interior 14' },
+  { src: 'photos/l15.png', alt: 'Luxury interior 15' },
+  { src: 'photos/l16.png', alt: 'Luxury interior 16' },
+  { src: 'photos/l17.png', alt: 'Luxury interior 17' },
+  { src: 'photos/l18.png', alt: 'Luxury interior 18' },
+  { src: 'photos/l19.png', alt: 'Luxury interior 19' },
+  { src: 'photos/l20.png', alt: 'Luxury interior 20' },
+  { src: 'photos/l21.png', alt: 'Luxury interior 21' },
+  { src: 'photos/l22.png', alt: 'Luxury interior 22' },
+  { src: 'photos/l23.png', alt: 'Luxury interior 23' },
+  { src: 'photos/l24.png', alt: 'Luxury interior 24' },
+  { src: 'photos/l25.png', alt: 'Luxury interior 25' },
+  { src: 'https://ik.imagekit.io/jai777/Singh%20Vanity%20van/sh1.jpeg?updatedAt=1773603302452', alt: 'Singh Vanity luxury lounge' },
+  { src: 'https://ik.imagekit.io/jai777/Singh%20Vanity%20van/sh2.jpeg?updatedAt=1773603301268', alt: 'Singh Vanity van exterior' },
+  { src: 'https://ik.imagekit.io/jai777/Singh%20Vanity%20van/sh3.jpeg?updatedAt=1773603301279', alt: 'Singh Vanity van detail' },
+  { src: 'https://ik.imagekit.io/jai777/Singh%20Vanity%20van/WhatsApp%20Image%202026-02-27%20at%2014.27.57.jpeg?updatedAt=1772807575108', alt: 'Singh Vanity on location' },
+  { src: 'https://ik.imagekit.io/SinghVanitysound/Vanity%20/celeb%20van/cd.jpeg', alt: 'Celebrity Vanity Van' },
+  { src: 'https://ik.imagekit.io/SinghVanitysound/Vanity%20/Double%20Door/dd1.png', alt: 'Double Door Vanity Van' },
+  { src: 'https://ik.imagekit.io/SinghVanitysound/Vanity%20/triple%20door%20/tr3.png?updatedAt=1782058908701', alt: 'Triple Door Vanity Van' },
+  { src: 'https://ik.imagekit.io/SinghVanitysound/Vanity%20/Toilet%20van%20/T1.jpeg?updatedAt=1782058251185', alt: 'Mobile Toilet Van' },
+  { src: 'https://ik.imagekit.io/SinghVanitysound/Vanity%20/Toilet%20van%20/t2.jpeg?updatedAt=1782058250894', alt: 'Mobile Toilet Van interior' },
+  { src: 'https://ik.imagekit.io/SinghVanitysound/Vanity%20/Toilet%20van%20/t6.jpeg?updatedAt=1782058251005', alt: 'Mobile Toilet Van detail' },
+  { src: 'https://ik.imagekit.io/SinghVanitysound/Vanity%20/Toilet%20van%20/t7.jpeg?updatedAt=1782058251044', alt: 'Mobile Toilet Van washbasin' },
+  { src: 'https://ik.imagekit.io/SinghVanitysound/Vanity%20/Toilet%20van%20/y8.jpeg?updatedAt=1782058251198', alt: 'Mobile Toilet Van ventilation' }
+];
+
+/* ── Math helpers ── */
+const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
+const normalizeAngle = d => ((d % 360) + 360) % 360;
+const wrapAngleSigned = deg => { const a = (((deg + 180) % 360) + 360) % 360; return a - 180; };
+const getDataNum = (el, name, fb) => { const v = parseFloat(el.dataset[name]); return isFinite(v) ? v : fb; };
+
+/* ── Build sphere tile layout (matches React source exactly) ── */
+function buildItems(pool, segments) {
+  const xCols = Array.from({ length: segments }, (_, i) => -37 + i * 2);
+  const evenYs = [-4, -2, 0, 2, 4];
+  const oddYs  = [-3, -1, 1, 3, 5];
+
+  const coords = xCols.flatMap((x, c) =>
+    (c % 2 === 0 ? evenYs : oddYs).map(y => ({ x, y, sizeX: 2, sizeY: 2 }))
+  );
+
+  const totalSlots = coords.length;
+  const used = Array.from({ length: totalSlots }, (_, i) => pool[i % pool.length]);
+
+  /* prevent consecutive duplicates */
+  for (let i = 1; i < used.length; i++) {
+    if (used[i].src === used[i - 1].src) {
+      for (let j = i + 1; j < used.length; j++) {
+        if (used[j].src !== used[i].src) { [used[i], used[j]] = [used[j], used[i]]; break; }
+      }
+    }
+  }
+  return coords.map((c, i) => ({ ...c, src: used[i].src, alt: used[i].alt }));
+}
+
+function computeItemBaseRotation(ox, oy, sx, sy, segs) {
+  const unit = 360 / segs / 2;
+  return { rotateX: unit * (oy - (sy - 1) / 2), rotateY: unit * (ox + (sx - 1) / 2) };
+}
+
+/* ── Preload a batch of images before showing gallery ── */
+function preloadImages(images, onProgress, onDone) {
+  const BATCH = 12; /* preload first 12, then show */
+  let loaded = 0;
+  const first = images.slice(0, BATCH);
+  if (first.length === 0) { onDone(); return; }
+  first.forEach(img => {
+    const el = new Image();
+    el.onload = el.onerror = () => {
+      loaded++;
+      onProgress(loaded / first.length);
+      if (loaded === first.length) onDone();
+    };
+    el.src = img.src;
+  });
+}
+
+/* ── Main gallery init ── */
+function initDomeGallery(container) {
+  const { segments, fit, minRadius, maxRadius, padFactor, overlayBlurColor,
+          maxVerticalRotationDeg, dragSensitivity, enlargeTransitionMs,
+          dragDampening, openedImageWidth, openedImageHeight,
+          imageBorderRadius, openedImageBorderRadius, grayscale } = CFG;
+
+  /* state */
+  const rot = { x: 0, y: 0 };
+  let startRot = { x: 0, y: 0 };
+  let startPos = null;
+  let prevPos = null, prevTime = 0;
+  let vel = { x: 0, y: 0 };
+  let dragging = false, moved = false;
+  let inertiaRAF = null;
+  let focusedEl = null;
+  let origTilePos = null;
+  let opening = false, openStartedAt = 0, lastDragEnd = 0;
+
+  const items = buildItems(ALL_IMAGES, segments);
+
+  /* ── Build DOM ── */
+  const root = document.createElement('div');
+  root.className = 'sphere-root';
+  root.style.setProperty('--segs', segments);
+  root.style.setProperty('--overlay-blur-color', overlayBlurColor);
+  root.style.setProperty('--tile-radius', imageBorderRadius);
+  root.style.setProperty('--enlarge-radius', openedImageBorderRadius);
+  root.style.setProperty('--image-filter', grayscale ? 'grayscale(1)' : 'none');
+
+  const main  = el('main', 'sphere-main');
+  const stage = el('div', 'stage');
+  const sphere = el('div', 'sphere');
+
+  items.forEach(it => {
+    const item = el('div', 'item');
+    item.dataset.src    = it.src;
+    item.dataset.ox     = it.x;
+    item.dataset.oy     = it.y;
+    item.dataset.sx     = it.sizeX;
+    item.dataset.sy     = it.sizeY;
+    item.style.setProperty('--ox',   it.x);
+    item.style.setProperty('--oy',   it.y);
+    item.style.setProperty('--sz-x', it.sizeX);
+    item.style.setProperty('--sz-y', it.sizeY);
+
+    const imgDiv = el('div', 'item__image');
+    imgDiv.setAttribute('role', 'button');
+    imgDiv.setAttribute('tabindex', '0');
+    imgDiv.setAttribute('aria-label', it.alt || 'Open image');
+
+    const img = document.createElement('img');
+    img.src = it.src; img.alt = it.alt || ''; img.draggable = false;
+    img.loading = 'lazy';
+
+    imgDiv.appendChild(img); item.appendChild(imgDiv); sphere.appendChild(item);
+  });
+
+  stage.appendChild(sphere); main.appendChild(stage);
+  main.appendChild(el('div', 'overlay'));
+  main.appendChild(el('div', 'overlay overlay--blur'));
+  main.appendChild(el('div', 'edge-fade edge-fade--top'));
+  main.appendChild(el('div', 'edge-fade edge-fade--bottom'));
+
+  const viewer = el('div', 'viewer');
+  const scrim  = el('div', 'scrim');
+  const frame  = el('div', 'frame');
+  viewer.appendChild(scrim); viewer.appendChild(frame);
+  main.appendChild(viewer);
+  root.appendChild(main);
+  container.appendChild(root);
+
+  function el(tag, cls) {
+    const d = document.createElement(tag);
+    if (cls) d.className = cls;
+    return d;
+  }
+
+  /* ── Resize observer ── */
+  const ro = new ResizeObserver(entries => {
+    const { width: w, height: h } = entries[0].contentRect;
+    const minDim = Math.min(w, h);
+    const aspect = w / h;
+    let basis = aspect >= 1.3 ? w : minDim;
+    let radius = clamp(Math.min(basis * fit, h * 1.35), minRadius, maxRadius);
+
+    const pad = Math.max(8, Math.round(minDim * padFactor));
+    root.style.setProperty('--radius', `${Math.round(radius)}px`);
+    root.style.setProperty('--viewer-pad', `${pad}px`);
+    applyTransform(rot.x, rot.y);
+  });
+  ro.observe(root);
+
+  function applyTransform(xDeg, yDeg) {
+    sphere.style.transform = `translateZ(calc(var(--radius) * -1)) rotateX(${xDeg}deg) rotateY(${yDeg}deg)`;
+  }
+
+  /* ── Inertia ── */
+  function stopInertia() { if (inertiaRAF) { cancelAnimationFrame(inertiaRAF); inertiaRAF = null; } }
+
+  function startInertia(vx, vy) {
+    let vX = clamp(vx, -1.4, 1.4) * 80;
+    let vY = clamp(vy, -1.4, 1.4) * 80;
+    let frames = 0;
+    const d = clamp(dragDampening, 0, 1);
+    const friction = 0.94 + 0.055 * d;
+    const stop = 0.015 - 0.01 * d;
+    const maxF = Math.round(90 + 270 * d);
+    const step = () => {
+      vX *= friction; vY *= friction;
+      if ((Math.abs(vX) < stop && Math.abs(vY) < stop) || ++frames > maxF) { inertiaRAF = null; return; }
+      rot.x = clamp(rot.x - vY / 200, -maxVerticalRotationDeg, maxVerticalRotationDeg);
+      rot.y = wrapAngleSigned(rot.y + vX / 200);
+      applyTransform(rot.x, rot.y);
+      inertiaRAF = requestAnimationFrame(step);
+    };
+    stopInertia();
+    inertiaRAF = requestAnimationFrame(step);
+  }
+
+  /* ── Drag ── */
+  main.addEventListener('pointerdown', e => {
+    if (focusedEl) return;
+    stopInertia();
+    dragging = true; moved = false;
+    startRot = { ...rot };
+    startPos = prevPos = { x: e.clientX, y: e.clientY };
+    prevTime = performance.now();
+    vel = { x: 0, y: 0 };
+    main.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  }, { passive: false });
+
+  main.addEventListener('pointermove', e => {
+    if (!dragging || !startPos) return;
+    const dx = e.clientX - startPos.x, dy = e.clientY - startPos.y;
+    if (!moved && dx * dx + dy * dy > 16) moved = true;
+    rot.x = clamp(startRot.x - dy / dragSensitivity, -maxVerticalRotationDeg, maxVerticalRotationDeg);
+    rot.y = wrapAngleSigned(startRot.y + dx / dragSensitivity);
+    applyTransform(rot.x, rot.y);
+    const now = performance.now(), dt = now - prevTime;
+    if (dt > 0 && prevPos) { vel.x = (e.clientX - prevPos.x) / dt; vel.y = (e.clientY - prevPos.y) / dt; }
+    prevPos = { x: e.clientX, y: e.clientY }; prevTime = performance.now();
+  });
+
+  main.addEventListener('pointerup', () => {
+    if (!dragging) return;
+    dragging = false;
+    if (Math.abs(vel.x) > 0.005 || Math.abs(vel.y) > 0.005) startInertia(vel.x, vel.y);
+    if (moved) lastDragEnd = performance.now();
+    moved = false;
+  });
+
+  main.addEventListener('pointercancel', () => { dragging = false; moved = false; });
+
+  /* ── Open image ── */
+  function openItem(imgDiv) {
+    if (opening) return;
+    opening = true; openStartedAt = performance.now();
+    document.body.classList.add('dg-scroll-lock');
+
+    focusedEl = imgDiv;
+    const parent = imgDiv.parentElement;
+
+    const ox = getDataNum(parent, 'ox', 0), oy = getDataNum(parent, 'oy', 0);
+    const sx = getDataNum(parent, 'sx', 2), sy = getDataNum(parent, 'sy', 2);
+    const pr = computeItemBaseRotation(ox, oy, sx, sy, segments);
+
+    let rotY = -(normalizeAngle(pr.rotateY) + normalizeAngle(rot.y)) % 360;
+    if (rotY < -180) rotY += 360;
+    const rotX = -pr.rotateX - rot.x;
+    parent.style.setProperty('--ryd', `${rotY}deg`);
+    parent.style.setProperty('--rxd', `${rotX}deg`);
+
+    /* reference div to measure tile world position */
+    const ref = document.createElement('div');
+    ref.className = 'item__image item__image--reference';
+    ref.style.cssText = 'opacity:0;transform:rotateX(' + (-pr.rotateX) + 'deg) rotateY(' + (-pr.rotateY) + 'deg)';
+    parent.appendChild(ref);
+    void ref.offsetHeight;
+
+    const tileR = ref.getBoundingClientRect();
+    const mainR = main.getBoundingClientRect();
+    const frameR = frame.getBoundingClientRect();
+
+    if (!tileR.width) {
+      opening = false; focusedEl = null; parent.removeChild(ref);
+      document.body.classList.remove('dg-scroll-lock'); return;
+    }
+
+    origTilePos = { left: tileR.left, top: tileR.top, width: tileR.width, height: tileR.height };
+    imgDiv.style.visibility = 'hidden';
+
+    /* create enlarged overlay */
+    const ov = document.createElement('div');
+    ov.className = 'enlarge';
+    ov.style.cssText = `position:absolute;left:${frameR.left - mainR.left}px;top:${frameR.top - mainR.top}px;width:${frameR.width}px;height:${frameR.height}px;opacity:0;z-index:30;will-change:transform,opacity;transform-origin:top left;transition:transform ${enlargeTransitionMs}ms ease,opacity ${enlargeTransitionMs}ms ease`;
+
+    const src = parent.dataset.src || imgDiv.querySelector('img')?.src || '';
+    const img = document.createElement('img');
+    img.src = src;
+    ov.appendChild(img);
+    viewer.appendChild(ov);
+
+    const tx = tileR.left - frameR.left, ty = tileR.top - frameR.top;
+    const sx0 = tileR.width / frameR.width, sy0 = tileR.height / frameR.height;
+    ov.style.transform = `translate(${tx}px,${ty}px) scale(${sx0 > 0 ? sx0 : 1},${sy0 > 0 ? sy0 : 1})`;
+
+    setTimeout(() => {
+      if (!ov.parentElement) return;
+      ov.style.opacity = '1';
+      ov.style.transform = 'translate(0,0) scale(1,1)';
+      root.setAttribute('data-enlarging', 'true');
+    }, 16);
+
+    /* expand to custom size */
+    if (openedImageWidth || openedImageHeight) {
+      const onEnd = ev => {
+        if (ev.propertyName !== 'transform') return;
+        ov.removeEventListener('transitionend', onEnd);
+        const prev = ov.style.transition;
+        ov.style.transition = 'none';
+        ov.style.width  = openedImageWidth  || frameR.width  + 'px';
+        ov.style.height = openedImageHeight || frameR.height + 'px';
+        const nr = ov.getBoundingClientRect();
+        ov.style.width  = frameR.width + 'px';
+        ov.style.height = frameR.height + 'px';
+        void ov.offsetWidth;
+        ov.style.transition = `left ${enlargeTransitionMs}ms ease,top ${enlargeTransitionMs}ms ease,width ${enlargeTransitionMs}ms ease,height ${enlargeTransitionMs}ms ease`;
+        const cl = frameR.left - mainR.left + (frameR.width  - nr.width)  / 2;
+        const ct = frameR.top  - mainR.top  + (frameR.height - nr.height) / 2;
+        requestAnimationFrame(() => {
+          ov.style.left   = cl + 'px';
+          ov.style.top    = ct + 'px';
+          ov.style.width  = openedImageWidth  || frameR.width  + 'px';
+          ov.style.height = openedImageHeight || frameR.height + 'px';
+        });
+      };
+      ov.addEventListener('transitionend', onEnd);
+    }
+  }
+
+  /* ── Close image ── */
+  function closeImage() {
+    if (performance.now() - openStartedAt < 250) return;
+    const imgDiv = focusedEl;
+    if (!imgDiv) return;
+    const parent = imgDiv.parentElement;
+    const ov = viewer.querySelector('.enlarge');
+    if (!ov) return;
+
+    const ref = parent.querySelector('.item__image--reference');
+    const op = origTilePos;
+
+    if (!op) {
+      ov.remove(); if (ref) ref.remove();
+      parent.style.setProperty('--ryd', '0deg');
+      parent.style.setProperty('--rxd', '0deg');
+      imgDiv.style.visibility = '';
+      focusedEl = null; root.removeAttribute('data-enlarging');
+      opening = false; document.body.classList.remove('dg-scroll-lock');
+      return;
+    }
+
+    const cur = ov.getBoundingClientRect();
+    const rootR = root.getBoundingClientRect();
+
+    const closing = document.createElement('div');
+    closing.style.cssText = `position:absolute;left:${cur.left - rootR.left}px;top:${cur.top - rootR.top}px;width:${cur.width}px;height:${cur.height}px;z-index:9999;border-radius:var(--enlarge-radius,20px);overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:all ${enlargeTransitionMs}ms ease-out;pointer-events:none`;
+
+    const oi = ov.querySelector('img');
+    if (oi) { const ci = oi.cloneNode(); ci.style.cssText = 'width:100%;height:100%;object-fit:cover;filter:none'; closing.appendChild(ci); }
+    ov.remove();
+    root.appendChild(closing);
+    void closing.getBoundingClientRect();
+
+    requestAnimationFrame(() => {
+      closing.style.left   = (op.left - rootR.left) + 'px';
+      closing.style.top    = (op.top  - rootR.top)  + 'px';
+      closing.style.width  = op.width  + 'px';
+      closing.style.height = op.height + 'px';
+      closing.style.opacity = '0';
+    });
+
+    closing.addEventListener('transitionend', () => {
+      closing.remove(); origTilePos = null;
+      if (ref) ref.remove();
+      parent.style.setProperty('--ryd', '0deg');
+      parent.style.setProperty('--rxd', '0deg');
+      requestAnimationFrame(() => {
+        imgDiv.style.visibility = ''; imgDiv.style.opacity = '0';
+        focusedEl = null; root.removeAttribute('data-enlarging');
+        requestAnimationFrame(() => {
+          imgDiv.style.transition = 'opacity 300ms ease-out';
+          requestAnimationFrame(() => {
+            imgDiv.style.opacity = '1';
+            setTimeout(() => {
+              imgDiv.style.transition = ''; imgDiv.style.opacity = '';
+              opening = false;
+              if (!dragging) document.body.classList.remove('dg-scroll-lock');
+            }, 300);
+          });
+        });
+      });
+    }, { once: true });
+  }
+
+  /* ── Event wiring ── */
+  main.addEventListener('click', e => {
+    const t = e.target.closest('.item__image');
+    if (!t || dragging || moved || performance.now() - lastDragEnd < 80 || opening) return;
+    openItem(t);
+  });
+
+  scrim.addEventListener('click', closeImage);
+  window.addEventListener('keydown', e => { if (e.key === 'Escape') closeImage(); });
+
+  /* auto-spin on load */
+  let autoSpin = true;
+  main.addEventListener('pointerdown', () => { autoSpin = false; }, { once: true });
+  let autoRot = 0;
+  (function spin() {
+    if (!autoSpin) return;
+    autoRot = wrapAngleSigned(autoRot + 0.05);
+    rot.y = autoRot;
+    applyTransform(rot.x, rot.y);
+    requestAnimationFrame(spin);
+  })();
+
+  applyTransform(0, 0);
+}
+
+/* ── Preload + init ── */
+const loader = document.getElementById('g-loader');
+const fill   = document.getElementById('g-fill');
+const loaderText = document.getElementById('g-loader-text');
+const container = document.getElementById('gallery-root');
+
+preloadImages(ALL_IMAGES, p => {
+  fill.style.width = (p * 100) + '%';
+}, () => {
+  loaderText.textContent = 'Welcome';
+  fill.style.width = '100%';
+  setTimeout(() => {
+    loader.classList.add('hidden');
+    setTimeout(() => loader.remove(), 600);
+    initDomeGallery(container);
+  }, 400);
+});
+
+function preloadImages(images, onProgress, onDone) {
+  const BATCH = Math.min(12, images.length);
+  if (BATCH === 0) { onDone(); return; }
+  let loaded = 0;
+  images.slice(0, BATCH).forEach(item => {
+    const img = new Image();
+    img.onload = img.onerror = () => {
+      onProgress(++loaded / BATCH);
+      if (loaded === BATCH) onDone();
+    };
+    img.src = item.src;
+  });
+}
+</script>
+</body>
+</html>

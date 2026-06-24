@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Story — Singh Vanity</title>
+<meta name="description" content="Since 2009, Singh Vanity has pioneered luxury vanity vans in the Bollywood film industry. Read the full story of India's most trusted vanity van family.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --gold: #D4A017;
+  --bg: #0a0804;
+  --bg2: #0d0b08;
+  --text: rgba(255,255,255,0.75);
+}
+html { scroll-behavior: smooth; font-size: 15px; }
+body { font-family: 'Manrope', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+/* ── HEADER ── */
+.pg-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(6,4,2,0.85); backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(212,160,23,0.1);
+  padding: 18px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.pg-back {
+  display: inline-flex; align-items: center; gap: 9px;
+  color: rgba(255,255,255,0.6); text-decoration: none;
+  font-size: 0.8rem; font-weight: 500; letter-spacing: 0.3px;
+  transition: color 0.2s, gap 0.2s;
+}
+.pg-back svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; transition: transform 0.2s; }
+.pg-back:hover { color: var(--gold); }
+.pg-back:hover svg { transform: translateX(-3px); }
+.pg-header-title {
+  font-family: "Marcellus", serif;
+  font-size: 1rem; color: rgba(255,255,255,0.5); letter-spacing: 1px;
+}
+.pg-header-cta {
+  padding: 9px 22px; background: var(--gold); color: #0a0804;
+  border: none; border-radius: 10px;
+  font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 0.8rem;
+  cursor: pointer; text-decoration: none; letter-spacing: 0.2px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.pg-header-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212,160,23,0.4); }
+
+/* ── HERO ── */
+.pg-hero {
+  min-height: 60vh; position: relative;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 120px 40px 80px;
+  overflow: hidden;
+}
+.pg-hero-bg {
+  position: absolute; inset: 0;
+  background: url("https://ik.imagekit.io/jai777/Singh%20Vanity%20van/sh1.jpeg?updatedAt=1773603302452") center/cover no-repeat;
+  opacity: 0.22;
+  transform: scale(1.04);
+}
+.pg-hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(6,4,2,0.5) 0%, rgba(6,4,2,0) 40%, rgba(6,4,2,0.9) 100%);
+}
+.pg-hero-content { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; width: 100%; }
+.pg-hero-overline {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+}
+.pg-hero-overline::before {
+  content: ''; width: 32px; height: 1.5px; background: var(--gold); opacity: 0.7;
+}
+.pg-hero-overline span {
+  font-size: 0.66rem; font-weight: 700; letter-spacing: 4px;
+  text-transform: uppercase; color: rgba(212,160,23,0.75);
+}
+.pg-hero-title {
+  font-family: "Marcellus", serif;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  color: #fff; line-height: 1.05; margin-bottom: 20px;
+}
+.pg-hero-sub {
+  font-size: 1rem; color: rgba(255,255,255,0.5);
+  max-width: 52ch; line-height: 1.7;
+}
+/* Stats bar */
+.pg-stats {
+  display: flex; gap: 0;
+  margin-top: 48px; margin-left: -40px; margin-right: -40px; padding: 0 40px;
+  background: rgba(6,4,2,0.7); backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(212,160,23,0.14);
+  border-bottom: 1px solid rgba(212,160,23,0.14);
+  position: relative; z-index: 2;
+}
+.pg-stat {
+  flex: 1; padding: 22px 16px; text-align: center;
+  border-right: 1px solid rgba(212,160,23,0.12);
+}
+.pg-stat:last-child { border-right: none; }
+.pg-stat-num {
+  display: block; font-family: "Marcellus", serif;
+  font-size: 1.8rem; color: var(--gold); line-height: 1; margin-bottom: 5px;
+}
+.pg-stat-num sup { font-size: 0.65rem; }
+.pg-stat-label {
+  font-size: 0.58rem; letter-spacing: 2px; text-transform: uppercase;
+  color: rgba(255,255,255,0.38);
+}
+
+/* ── MAIN CONTENT ── */
+.pg-body { max-width: 1200px; margin: 0 auto; padding: 96px 40px; }
+
+/* Story grid: sidebar | text */
+.pg-story-grid {
+  display: grid; grid-template-columns: 200px 1fr;
+  gap: 80px; align-items: start;
+}
+.pg-story-aside {
+  position: sticky; top: 100px;
+}
+.pg-aside-label {
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 3.5px;
+  text-transform: uppercase; color: rgba(212,160,23,0.45);
+  margin-bottom: 14px; display: block;
+}
+.pg-aside-vline {
+  width: 1px; height: 56px;
+  background: linear-gradient(to bottom, rgba(212,160,23,0.3), transparent);
+  margin: 14px 0;
+}
+.pg-aside-text {
+  font-family: "Marcellus", serif;
+  font-size: 0.88rem; color: rgba(255,255,255,0.38);
+  line-height: 1.7; font-style: italic;
+}
+.pg-story-text {}
+.pg-story-text h2 {
+  font-family: "Marcellus", serif;
+  font-size: clamp(1.6rem, 2.8vw, 2.2rem); color: #fff;
+  line-height: 1.2; margin-bottom: 28px;
+}
+.pg-para {
+  font-size: 1rem; color: rgba(255,255,255,0.68);
+  line-height: 1.88; margin-bottom: 28px;
+}
+.pg-para:last-child { margin-bottom: 0; }
+.pg-pull-quote {
+  margin: 40px 0; padding: 22px 28px;
+  border-left: 2px solid var(--gold);
+  background: rgba(212,160,23,0.05);
+  border-radius: 0 18px 18px 0;
+}
+.pg-pull-quote p {
+  font-family: "Marcellus", serif;
+  font-size: 1.12rem; color: rgba(255,255,255,0.9);
+  line-height: 1.65; font-style: italic; margin: 0;
+}
+.pg-section-divider {
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, rgba(212,160,23,0.2), transparent);
+  margin: 48px 0;
+}
+
+/* Photo mosaic */
+.pg-mosaic {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 240px 240px; gap: 12px;
+  margin: 64px 0;
+}
+.pg-mosaic-item { border-radius: 14px; overflow: hidden; border: 1px solid rgba(212,160,23,0.1); }
+.pg-mosaic-item.tall { grid-row: span 2; }
+.pg-mosaic-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
+.pg-mosaic-item:hover img { transform: scale(1.06); }
+
+/* CTA block */
+.pg-cta-block {
+  text-align: center; padding: 80px 40px;
+  background: linear-gradient(155deg, rgba(22,16,6,0.8), rgba(10,8,4,0.95));
+  border: 1px solid rgba(212,160,23,0.16); border-radius: 24px;
+  margin-top: 64px;
+}
+.pg-cta-label {
+  font-size: 0.66rem; font-weight: 700; letter-spacing: 4px;
+  text-transform: uppercase; color: rgba(212,160,23,0.65); margin-bottom: 20px;
+  display: block;
+}
+.pg-cta-heading {
+  font-family: "Marcellus", serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem); color: #fff;
+  line-height: 1.15; margin-bottom: 16px;
+}
+.pg-cta-sub { font-size: 0.95rem; color: rgba(255,255,255,0.42); max-width: 44ch; margin: 0 auto 36px; line-height: 1.7; }
+.pg-cta-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 16px 40px; background: var(--gold); color: #0a0804;
+  border: none; border-radius: 14px;
+  font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 0.95rem;
+  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 6px 28px rgba(212,160,23,0.35); text-decoration: none;
+}
+.pg-cta-btn:hover { transform: translateY(-3px); box-shadow: 0 14px 44px rgba(212,160,23,0.5); }
+
+/* ── FOOTER ── */
+.pg-footer {
+  border-top: 1px solid rgba(212,160,23,0.1);
+  padding: 32px 40px; text-align: center;
+}
+.pg-footer p { font-size: 0.78rem; color: rgba(255,255,255,0.22); }
+.pg-footer a { color: rgba(212,160,23,0.55); text-decoration: none; }
+.pg-footer a:hover { color: var(--gold); }
+
+@media (max-width: 600px) {
+  .pg-header-title { display: none; }
+  .pg-back-text { display: none; }
+}
+@media (max-width: 768px) {
+  .pg-header { padding: 16px 20px; }
+  .pg-hero { padding: 100px 20px 0; }
+  .pg-stats { margin-left: -20px; margin-right: -20px; padding: 0 20px; flex-wrap: wrap; }
+  .pg-stat { flex: 1 1 45%; border-right: none; border-bottom: 1px solid rgba(212,160,23,0.1); }
+  .pg-body { padding: 64px 20px; }
+  .pg-story-grid { grid-template-columns: 1fr; gap: 40px; }
+  .pg-story-aside { position: static; display: flex; flex-direction: row; gap: 24px; flex-wrap: wrap; }
+  .pg-aside-vline { display: none; }
+  .pg-mosaic { grid-template-columns: 1fr 1fr; grid-template-rows: 180px 180px; }
+  .pg-mosaic-item.tall { grid-row: auto; }
+  .pg-footer { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="pg-header">
+  <a href="index.html" class="pg-back" id="pgBackLink">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    <span class="pg-back-text">Back to Singh Vanity</span>
+  </a>
+  <div class="pg-header-title">Singh Vanity &mdash; Our Story</div>
+  <a href="index.html#contact" class="pg-header-cta">Book a Van</a>
+</header>
+
+<!-- HERO -->
+<div class="pg-hero">
+  <div class="pg-hero-bg"></div>
+  <div class="pg-hero-overlay"></div>
+  <div class="pg-hero-content">
+    <div class="pg-hero-overline"><span>Est. 2009</span></div>
+    <h1 class="pg-hero-title">The Family Behind<br>Mumbai's Finest Vans</h1>
+    <p class="pg-hero-sub">Bollywood's first vanity van. 17 years of passion and precision, built one luxury van at a time.</p>
+  </div>
+  <div class="pg-stats">
+    <div class="pg-stat"><span class="pg-stat-num">150<sup>+</sup></span><span class="pg-stat-label">Events</span></div>
+    <div class="pg-stat"><span class="pg-stat-num">17<sup>+</sup></span><span class="pg-stat-label">Years</span></div>
+    <div class="pg-stat"><span class="pg-stat-num">3</span><span class="pg-stat-label">Vans</span></div>
+    <div class="pg-stat"><span class="pg-stat-num">4.9<sup>★</sup></span><span class="pg-stat-label">Rating</span></div>
+  </div>
+</div>
+
+<!-- PHOTO MOSAIC -->
+<div style="max-width:1200px;margin:0 auto;padding:48px 40px 0;">
+  <div class="pg-mosaic">
+    <div class="pg-mosaic-item tall">
+      <img src="https://ik.imagekit.io/jai777/Singh%20Vanity%20van/sh1.jpeg?updatedAt=1773603302452" alt="Singh Vanity interior">
+    </div>
+    <div class="pg-mosaic-item">
+      <img src="https://ik.imagekit.io/jai777/Singh%20Vanity%20van/sh2.jpeg?updatedAt=1773603301268" alt="Singh Vanity exterior">
+    </div>
+    <div class="pg-mosaic-item">
+      <img src="photos/v3.png" alt="Celebrity van" loading="lazy">
+    </div>
+    <div class="pg-mosaic-item">
+      <img src="https://ik.imagekit.io/jai777/Singh%20Vanity%20van/sh3.jpeg?updatedAt=1773603301279" alt="Singh Vanity detail">
+    </div>
+    <div class="pg-mosaic-item">
+      <img src="photos/l9.png" alt="Gold marble bathroom" loading="lazy">
+    </div>
+  </div>
+</div>
+
+<!-- MAIN BODY -->
+<main class="pg-body">
+  <div class="pg-story-grid">
+
+    <!-- Sticky aside -->
+    <aside class="pg-story-aside">
+      <span class="pg-aside-label">Our Story</span>
+      <div class="pg-aside-vline"></div>
+      <p class="pg-aside-text">Bollywood's first vanity van, still setting the standard 17 years on.</p>
+      <div class="pg-aside-vline"></div>
+      <span class="pg-aside-label">Location</span>
+      <p class="pg-aside-text" style="font-style:normal;color:rgba(255,255,255,0.3);font-size:0.82rem;font-family:'Manrope',sans-serif;line-height:1.6;">Mumbai, Maharashtra<br>Pan India Service</p>
+    </aside>
+
+    <!-- Story text -->
+    <div class="pg-story-text">
+      <h2>A Pioneer in Every Sense</h2>
+
+      <p class="pg-para">Since 2009, Singh Vanity has been a pioneer in the Indian vanity van industry — proudly owning and operating the first-ever vanity van in the Bollywood film industry. What began as a breakthrough innovation has grown into a legacy of excellence, setting benchmarks in luxury, comfort, and on-location lifestyle solutions. From the very beginning, our vision has been simple yet powerful — to bring a home-like experience on wheels, elevated with elite design, functionality, and sophistication.</p>
+
+      <div class="pg-section-divider"></div>
+
+      <p class="pg-para">Over the years, our focus has been deeply rooted in understanding the evolving and intricate needs of the entertainment industry. Every vanity van we create is not just a vehicle, but a carefully crafted luxury environment designed to deliver an exclusive, premium experience. We believe that true luxury lies in detail, and every space we design reflects precision, comfort, and purpose.</p>
+
+      <div class="pg-pull-quote">
+        <p>"I have always believed in the power of persistence over noise. Success is not universal — it is personal, evolving differently for every individual and every journey."</p>
+      </div>
+
+      <p class="pg-para">While we have grown with the industry, our philosophy remains grounded. At Singh Vanity, this belief has shaped our foundation, allowing us to build more than a business; we have built a family-driven culture where trust, warmth, and dedication define every creation.</p>
+
+      <div class="pg-section-divider"></div>
+
+      <h2>Built for the Next Generation</h2>
+
+      <p class="pg-para">From the early days of simple requirements to today's highly advanced and creative demands, we have continuously evolved with the industry. As a new generation of artists, creators, and performers brings more imagination and diversity, we are inspired to design vanity vans that match every personality, style, and vision. Our goal is to blend luxury with emotion, structure with comfort, and innovation with familiarity.</p>
+
+      <p class="pg-para">Today, Singh Vanity stands as a symbol of trust, legacy, and innovation — delivering vanity vans that do not just serve a purpose, but create an experience. A space where luxury feels personal, comfort feels natural, and every journey feels like a moment of fame.</p>
+
+      <!-- CTA block -->
+      <div class="pg-cta-block">
+        <span class="pg-cta-label">Ready to Experience It?</span>
+        <h2 class="pg-cta-heading">Book Your Van Today</h2>
+        <p class="pg-cta-sub">Serving Bollywood shoots, celebrity weddings, concerts and events across India. Available within 2 hours.</p>
+        <a href="index.html#contact" class="pg-cta-btn">
+          Get a Quote
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer class="pg-footer">
+  <p>&copy; 2025 Singh Vanity. All rights reserved. &nbsp;&middot;&nbsp; <a href="index.html" id="pgFooterBackLink">Back to main site</a></p>
+</footer>
+<script>
+  (function() {
+    var ret = new URLSearchParams(window.location.search).get('ret');
+    if (ret === null) return;
+    var url = 'index.html?scroll=' + ret;
+    var a1 = document.getElementById('pgBackLink');
+    var a2 = document.getElementById('pgFooterBackLink');
+    if (a1) a1.href = url;
+    if (a2) a2.href = url;
+  })();
+</script>
+
+</body>
+</html>
