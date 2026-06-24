@@ -129,9 +129,12 @@
   nav.dark-mode .nav-cta:hover { background: #fff; }
 
   /* Hamburger */
-  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
-  .hamburger span { width: 22px; height: 2px; background: var(--primary); border-radius: 2px; transition: 0.3s; }
-  nav.dark-mode .hamburger span { background: #fff; }
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px; cursor: pointer;
+    padding: 10px; border-radius: 10px;
+    background: rgba(6,4,2,0.55); backdrop-filter: blur(8px);
+  }
+  .hamburger span { width: 22px; height: 2px; background: #fff; border-radius: 2px; transition: 0.3s; }
 
   /* ── GLOBAL BUTTONS (used site-wide) ── */
   .btn-primary {
@@ -2510,6 +2513,11 @@
 /* ── STORY 1: Van Interior ── */
 (function () {
   gsap.registerPlugin(ScrollTrigger);
+  /* Mobile browsers resize the viewport (address bar show/hide) during scroll,
+     which would otherwise trigger ScrollTrigger to refresh and re-measure the
+     pinned hero section mid-scroll — causing the canvas to jump/zoom and the
+     navbar dark-mode toggle to misfire. Ignore those resize events on mobile. */
+  ScrollTrigger.config({ ignoreMobileResize: true });
   var N = 26;
   var canvas  = document.getElementById('s1-canvas');
   var ctx     = canvas.getContext('2d');
@@ -2532,7 +2540,13 @@
 
   function draw(idx) {
     var img = frames[idx]; if (!img) return;
-    var s = Math.max(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight);
+    /* On tall/narrow phone screens, "cover" would zoom into a thin sliver of
+       these landscape interior shots. Use "contain" there so the full van
+       stays visible; desktop/landscape viewports keep the full-bleed cover. */
+    var isNarrow = canvas.width < 700 || canvas.height > canvas.width;
+    var s = isNarrow
+      ? Math.min(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight)
+      : Math.max(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight);
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.drawImage(img,(canvas.width-img.naturalWidth*s)/2,(canvas.height-img.naturalHeight*s)/2,img.naturalWidth*s,img.naturalHeight*s);
   }
