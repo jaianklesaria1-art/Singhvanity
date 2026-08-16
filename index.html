@@ -2611,7 +2611,7 @@
       ctx.filter = 'blur(50px) brightness(0.55)';
       ctx.drawImage(img,(canvas.width-img.naturalWidth*sBg)/2,(canvas.height-img.naturalHeight*sBg)/2,img.naturalWidth*sBg,img.naturalHeight*sBg);
       ctx.restore();
-      var sFg = Math.max(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight) * 0.72;
+      var sFg = Math.max(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight) * 0.58;
       ctx.drawImage(img,(canvas.width-img.naturalWidth*sFg)/2,(canvas.height-img.naturalHeight*sFg)/2,img.naturalWidth*sFg,img.naturalHeight*sFg);
     } else {
       var s2 = Math.max(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight);
