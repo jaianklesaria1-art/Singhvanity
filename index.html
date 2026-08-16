@@ -1370,6 +1370,9 @@
 
   /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
+    /* Match the hero's dark background so overscroll/letterbox gaps around
+       the van don't flash the page's default cream body color. */
+    html, body { background: #060402; }
     /* Scrolls away with the page on mobile instead of staying pinned. */
     nav {
       position: static; top: auto; left: auto; transform: none;
