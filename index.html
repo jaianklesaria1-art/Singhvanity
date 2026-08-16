@@ -253,9 +253,14 @@
       display: block; position: relative;
       height: 100svh; min-height: 560px; overflow: hidden; background: #060402;
     }
+    .mobile-hero-static-bg {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      filter: blur(50px) brightness(0.55); transform: scale(1.15);
+    }
     .mobile-hero-static-img {
       position: absolute; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; object-position: center 60%; display: block;
+      object-fit: contain; display: block;
     }
     .mobile-hero-static-overlay {
       position: absolute; inset: 0;
@@ -1659,6 +1664,7 @@
 
 <!-- MOBILE STATIC HERO (replaces the scroll-canvas sequence below on small screens) -->
 <div class="mobile-hero-static">
+  <img class="mobile-hero-static-bg" src="shot/ezgif-frame-001.png" alt="" aria-hidden="true">
   <img class="mobile-hero-static-img" src="shot/ezgif-frame-001.png" alt="Singh Vanity luxury vanity van">
   <div class="mobile-hero-static-overlay"></div>
   <div class="mobile-hero-static-content">
