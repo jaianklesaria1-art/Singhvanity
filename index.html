@@ -103,7 +103,13 @@
     mix-blend-mode: difference;
     border-radius: 100px;
     white-space: nowrap;
-    transition: none;
+    transition: color 0.2s;
+  }
+  /* Guaranteed-visible hover/focus color — sits on top of the sliding pill,
+     so no reliance on the difference blend (which can wash out over busy backgrounds) */
+  .sn-item:hover, .sn-item:focus-visible {
+    color: var(--gold);
+    mix-blend-mode: normal;
   }
   /* The sliding dark pill */
   .sn-cursor {
@@ -563,6 +569,7 @@
     font-family: "Marcellus", serif;
     font-size: clamp(4.5rem, 8vw, 7rem); line-height: 0.85;
     color: rgba(212,160,23,0.14); display: block; letter-spacing: -4px;
+    text-shadow: 0 0 40px rgba(212,160,23,0.5), 0 0 80px rgba(212,160,23,0.25);
   }
   .gallery-header-count-num sup { font-size: 40%; color: rgba(212,160,23,0.28); vertical-align: super; }
   .gallery-header-count-label {
@@ -808,7 +815,8 @@
   .step:first-child { padding-left: 0; }
   .step::before { content: ''; position: absolute; top: -1px; left: 0; width: 0; height: 2px; background: var(--gold); transition: width 0.4s cubic-bezier(0.22,1,0.36,1); }
   .step:hover::before { width: 36px; }
-  .step-ghost { font-family: "Marcellus", serif; font-size: 10rem; color: rgba(212,160,23,0.065); line-height: 0.85; position: absolute; top: -24px; left: 8px; pointer-events: none; user-select: none; letter-spacing: -4px; }
+  .step-ghost { font-family: "Marcellus", serif; font-size: 10rem; color: rgba(212,160,23,0.065); line-height: 0.85; position: absolute; top: 16px; left: 8px; pointer-events: none; user-select: none; letter-spacing: -4px; text-shadow: 0 0 40px rgba(212,160,23,0.5), 0 0 80px rgba(212,160,23,0.25); transition: text-shadow 0.4s ease, color 0.4s ease; }
+  .step:hover .step-ghost { color: rgba(212,160,23,0.12); text-shadow: 0 0 50px rgba(212,160,23,0.75), 0 0 100px rgba(212,160,23,0.4); }
   .step:first-child .step-ghost { left: 0; }
   .step-num { display: inline-flex; align-items: center; font-family: "Marcellus", serif; font-size: 0.62rem; color: rgba(212,160,23,0.62); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 56px; background: none; border: none; box-shadow: none; }
   .step-num::before { display: none; }
@@ -1367,7 +1375,10 @@
       position: static; top: auto; left: auto; transform: none;
       width: 100%; max-width: none; border-radius: 0;
       will-change: auto;
+      background: #0a0804;
+      border-bottom: 1px solid rgba(212,160,23,0.12);
     }
+    nav .logo { color: #fff; }
     .contact-layout { grid-template-columns: 1fr; gap: 48px; }
     .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
     .steps { grid-template-columns: repeat(2,1fr); gap: 36px; }

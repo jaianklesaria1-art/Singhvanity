@@ -50,22 +50,22 @@ body { font-family: 'Manrope', sans-serif; background: var(--bg); color: var(--t
 
 /* ── HERO ── */
 .pg-hero {
-  min-height: 60vh; position: relative;
-  display: flex; flex-direction: column; justify-content: flex-end;
-  padding: 120px 40px 80px;
-  overflow: hidden;
+  position: relative; max-width: 1200px; margin: 0 auto;
+  padding: 168px 40px 0;
 }
-.pg-hero-bg {
-  position: absolute; inset: 0;
-  background: url("https://ik.imagekit.io/jai777/Singh%20Vanity%20van/sh1.jpeg?updatedAt=1773603302452") center/cover no-repeat;
-  opacity: 0.22;
-  transform: scale(1.04);
+.pg-hero-ghost {
+  position: absolute; bottom: 40px; left: -6px;
+  font-family: "Marcellus", serif;
+  font-size: clamp(6rem, 14vw, 11rem); color: rgba(212,160,23,0.05);
+  line-height: 1; letter-spacing: -6px;
+  pointer-events: none; user-select: none; z-index: 0;
 }
-.pg-hero-overlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(to bottom, rgba(6,4,2,0.5) 0%, rgba(6,4,2,0) 40%, rgba(6,4,2,0.9) 100%);
+.pg-hero-content {
+  padding-bottom: 48px;
+  border-bottom: 1px solid rgba(212,160,23,0.12);
+  position: relative; z-index: 1;
 }
-.pg-hero-content { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; width: 100%; }
+.pg-hero-left { position: relative; }
 .pg-hero-overline {
   display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
 }
@@ -84,29 +84,6 @@ body { font-family: 'Manrope', sans-serif; background: var(--bg); color: var(--t
 .pg-hero-sub {
   font-size: 1rem; color: rgba(255,255,255,0.5);
   max-width: 52ch; line-height: 1.7;
-}
-/* Stats bar */
-.pg-stats {
-  display: flex; gap: 0;
-  margin-top: 48px; margin-left: -40px; margin-right: -40px; padding: 0 40px;
-  background: rgba(6,4,2,0.7); backdrop-filter: blur(16px);
-  border-top: 1px solid rgba(212,160,23,0.14);
-  border-bottom: 1px solid rgba(212,160,23,0.14);
-  position: relative; z-index: 2;
-}
-.pg-stat {
-  flex: 1; padding: 22px 16px; text-align: center;
-  border-right: 1px solid rgba(212,160,23,0.12);
-}
-.pg-stat:last-child { border-right: none; }
-.pg-stat-num {
-  display: block; font-family: "Marcellus", serif;
-  font-size: 1.8rem; color: var(--gold); line-height: 1; margin-bottom: 5px;
-}
-.pg-stat-num sup { font-size: 0.65rem; }
-.pg-stat-label {
-  font-size: 0.58rem; letter-spacing: 2px; text-transform: uppercase;
-  color: rgba(255,255,255,0.38);
 }
 
 /* ── MAIN CONTENT ── */
@@ -176,22 +153,34 @@ body { font-family: 'Manrope', sans-serif; background: var(--bg); color: var(--t
 
 /* CTA block */
 .pg-cta-block {
+  position: relative; overflow: hidden;
   text-align: center; padding: 80px 40px;
-  background: linear-gradient(155deg, rgba(22,16,6,0.8), rgba(10,8,4,0.95));
   border: 1px solid rgba(212,160,23,0.16); border-radius: 24px;
   margin-top: 64px;
 }
+.pg-cta-bg {
+  position: absolute; inset: 0;
+  background: url("https://ik.imagekit.io/jai777/Singh%20Vanity%20van/sh1.jpeg?updatedAt=1773603302452") center/cover no-repeat;
+  opacity: 0.85; transform: scale(1.04);
+}
+.pg-cta-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(155deg, rgba(22,16,6,0.55), rgba(10,8,4,0.75));
+}
+.pg-cta-label, .pg-cta-heading, .pg-cta-sub, .pg-cta-btn { position: relative; z-index: 1; }
 .pg-cta-label {
   font-size: 0.66rem; font-weight: 700; letter-spacing: 4px;
-  text-transform: uppercase; color: rgba(212,160,23,0.65); margin-bottom: 20px;
+  text-transform: uppercase; color: rgba(212,160,23,0.9); margin-bottom: 20px;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.6);
   display: block;
 }
 .pg-cta-heading {
-  font-family: "Marcellus", serif;
+  font-family: "Marcellus", serif; font-weight: 700;
   font-size: clamp(1.8rem, 3.5vw, 2.8rem); color: #fff;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.6);
   line-height: 1.15; margin-bottom: 16px;
 }
-.pg-cta-sub { font-size: 0.95rem; color: rgba(255,255,255,0.42); max-width: 44ch; margin: 0 auto 36px; line-height: 1.7; }
+.pg-cta-sub { font-size: 0.95rem; font-weight: 700; color: rgba(255,255,255,0.85); text-shadow: 0 1px 8px rgba(0,0,0,0.6); max-width: 44ch; margin: 0 auto 36px; line-height: 1.7; }
 .pg-cta-btn {
   display: inline-flex; align-items: center; gap: 10px;
   padding: 16px 40px; background: var(--gold); color: #0a0804;
@@ -218,8 +207,6 @@ body { font-family: 'Manrope', sans-serif; background: var(--bg); color: var(--t
 @media (max-width: 768px) {
   .pg-header { padding: 16px 20px; }
   .pg-hero { padding: 100px 20px 0; }
-  .pg-stats { margin-left: -20px; margin-right: -20px; padding: 0 20px; flex-wrap: wrap; }
-  .pg-stat { flex: 1 1 45%; border-right: none; border-bottom: 1px solid rgba(212,160,23,0.1); }
   .pg-body { padding: 64px 20px; }
   .pg-story-grid { grid-template-columns: 1fr; gap: 40px; }
   .pg-story-aside { position: static; display: flex; flex-direction: row; gap: 24px; flex-wrap: wrap; }
@@ -244,18 +231,13 @@ body { font-family: 'Manrope', sans-serif; background: var(--bg); color: var(--t
 
 <!-- HERO -->
 <div class="pg-hero">
-  <div class="pg-hero-bg"></div>
-  <div class="pg-hero-overlay"></div>
+  <div class="pg-hero-ghost" aria-hidden="true">2009</div>
   <div class="pg-hero-content">
-    <div class="pg-hero-overline"><span>Est. 2009</span></div>
-    <h1 class="pg-hero-title">The Family Behind<br>Mumbai's Finest Vans</h1>
-    <p class="pg-hero-sub">Bollywood's first vanity van. 17 years of passion and precision, built one luxury van at a time.</p>
-  </div>
-  <div class="pg-stats">
-    <div class="pg-stat"><span class="pg-stat-num">150<sup>+</sup></span><span class="pg-stat-label">Events</span></div>
-    <div class="pg-stat"><span class="pg-stat-num">17<sup>+</sup></span><span class="pg-stat-label">Years</span></div>
-    <div class="pg-stat"><span class="pg-stat-num">3</span><span class="pg-stat-label">Vans</span></div>
-    <div class="pg-stat"><span class="pg-stat-num">4.9<sup>★</sup></span><span class="pg-stat-label">Rating</span></div>
+    <div class="pg-hero-left">
+      <div class="pg-hero-overline"><span>Est. 2009</span></div>
+      <h1 class="pg-hero-title">The Family Behind<br>Mumbai's Finest Vans</h1>
+      <p class="pg-hero-sub">Bollywood's first vanity van. 17 years of passion and precision, built one luxury van at a time.</p>
+    </div>
   </div>
 </div>
 
@@ -320,6 +302,8 @@ body { font-family: 'Manrope', sans-serif; background: var(--bg); color: var(--t
 
       <!-- CTA block -->
       <div class="pg-cta-block">
+        <div class="pg-cta-bg"></div>
+        <div class="pg-cta-overlay"></div>
         <span class="pg-cta-label">Ready to Experience It?</span>
         <h2 class="pg-cta-heading">Book Your Van Today</h2>
         <p class="pg-cta-sub">Serving Bollywood shoots, celebrity weddings, concerts and events across India. Available within 2 hours.</p>
