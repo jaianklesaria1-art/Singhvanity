@@ -2600,21 +2600,12 @@
 
   function draw(idx) {
     var img = frames[idx]; if (!img) return;
-    /* On tall/narrow phone screens, "cover" would zoom into a thin sliver of
-       these landscape interior shots. Use "contain" there so the full van
-       stays visible; desktop/landscape viewports keep the full-bleed cover. */
-    var isNarrow = canvas.width < 700 || canvas.height > canvas.width;
+    /* Full-bleed cover on all viewports — the studio-set background (lights,
+       green screen, rigging) fills the whole hero instead of leaving blank
+       letterbox margins on narrow phone screens. */
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    if (isNarrow) {
-      /* Leave the letterbox margins transparent so .story-sticky's gold-glow
-         gradient (matching the Fleet header's lamp motif) shows through,
-         instead of filling them with a blurred, grey-looking photo copy. */
-      var s = Math.min(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight);
-      ctx.drawImage(img,(canvas.width-img.naturalWidth*s)/2,(canvas.height-img.naturalHeight*s)/2,img.naturalWidth*s,img.naturalHeight*s);
-    } else {
-      var s2 = Math.max(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight);
-      ctx.drawImage(img,(canvas.width-img.naturalWidth*s2)/2,(canvas.height-img.naturalHeight*s2)/2,img.naturalWidth*s2,img.naturalHeight*s2);
-    }
+    var s2 = Math.max(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight);
+    ctx.drawImage(img,(canvas.width-img.naturalWidth*s2)/2,(canvas.height-img.naturalHeight*s2)/2,img.naturalWidth*s2,img.naturalHeight*s2);
   }
 
   var panels = [
