@@ -285,6 +285,47 @@
     }
   }
 
+  /* ── DESKTOP/ROTATE HINT POPUP (mobile only) ── */
+  .rotate-hint-overlay { display: none; }
+  @media (max-width: 900px) {
+    .rotate-hint-overlay {
+      display: flex; align-items: center; justify-content: center;
+      position: fixed; inset: 0; z-index: 99999;
+      background: rgba(6,4,2,0.88); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      padding: 24px; opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .rotate-hint-overlay.is-visible { opacity: 1; pointer-events: auto; }
+    .rotate-hint-card {
+      position: relative; max-width: 340px; width: 100%; text-align: center;
+      background: linear-gradient(155deg, rgba(22,16,6,0.96), rgba(10,8,4,0.98));
+      border: 1px solid rgba(212,160,23,0.2); border-radius: 20px;
+      padding: 36px 28px 28px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+      transform: translateY(10px) scale(0.97); transition: transform 0.3s ease;
+    }
+    .rotate-hint-overlay.is-visible .rotate-hint-card { transform: translateY(0) scale(1); }
+    .rotate-hint-close {
+      position: absolute; top: 14px; right: 14px;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(255,255,255,0.06); border: none; color: rgba(255,255,255,0.5);
+      font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    .rotate-hint-close:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .rotate-hint-icon { display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--gold); margin-bottom: 20px; }
+    .rotate-hint-title { font-family: "Marcellus", serif; font-size: 1.3rem; color: #fff; margin-bottom: 10px; }
+    .rotate-hint-body { font-size: 0.88rem; color: rgba(255,255,255,0.55); line-height: 1.65; margin-bottom: 22px; }
+    .rotate-hint-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 12px 26px; background: var(--gold); color: #0a0804;
+      border: none; border-radius: 10px; font-family: 'Manrope', sans-serif;
+      font-weight: 700; font-size: 0.85rem; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .rotate-hint-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212,160,23,0.35); }
+  }
+
   /* ══════════════════════════════════════
      ABOUT — EDITORIAL REDESIGN (ab-*)
   ══════════════════════════════════════ */
@@ -1618,6 +1659,38 @@
 </style>
 </head>
 <body>
+
+<!-- DESKTOP/ROTATE HINT POPUP (mobile only) -->
+<div class="rotate-hint-overlay" id="rotateHint">
+  <div class="rotate-hint-card">
+    <button class="rotate-hint-close" id="rotateHintClose" aria-label="Dismiss">&#x2715;</button>
+    <div class="rotate-hint-icon">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9"/><path d="M3 4v5h5"/></svg>
+    </div>
+    <h3 class="rotate-hint-title">Best Viewed on Desktop</h3>
+    <p class="rotate-hint-body">For the full cinematic experience, open this site on a laptop or desktop &mdash; or rotate your phone to landscape.</p>
+    <button class="rotate-hint-btn" id="rotateHintContinue">Continue Anyway</button>
+  </div>
+</div>
+<script>
+(function () {
+  var overlay = document.getElementById('rotateHint');
+  if (!overlay) return;
+  if (!window.matchMedia('(max-width: 900px)').matches) return;
+  if (sessionStorage.getItem('svRotateHintDismissed')) return;
+  setTimeout(function () { overlay.classList.add('is-visible'); }, 500);
+  function dismiss() {
+    overlay.classList.remove('is-visible');
+    sessionStorage.setItem('svRotateHintDismissed', '1');
+    setTimeout(function () { overlay.style.display = 'none'; }, 300);
+  }
+  document.getElementById('rotateHintClose').addEventListener('click', dismiss);
+  document.getElementById('rotateHintContinue').addEventListener('click', dismiss);
+  overlay.addEventListener('click', function (e) { if (e.target === overlay) dismiss(); });
+})();
+</script>
+
 <script>
   /* ── RESTORE SCROLL POSITION (after returning from gallery.html / about.html) ──
      Passed via ?scroll= query param rather than sessionStorage, since storage
