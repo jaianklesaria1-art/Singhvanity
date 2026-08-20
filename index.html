@@ -1604,7 +1604,7 @@
     background: var(--gold); color: #0a0804;
     border: none; border-radius: 12px;
     font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 0.86rem;
-    cursor: pointer; letter-spacing: 0.2px;
+    cursor: pointer; letter-spacing: 0.2px; text-decoration: none;
     transition: transform 0.2s, box-shadow 0.2s;
   }
   .about-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(212,160,23,0.38); }
@@ -2371,20 +2371,16 @@
           <span class="ab-text-lead-label">Our Legacy</span>
         </div>
         <p class="ab-body">Since 2009, Singh Vanity has been a pioneer in the Indian vanity van industry — proudly owning and operating the first-ever vanity van in the Bollywood film industry. What began as a breakthrough innovation has grown into a legacy of excellence, setting benchmarks in luxury, comfort, and on-location experience across India.</p>
-        <div class="ab-quote">
-          <p>"Every van we build is not just a vehicle — it is a carefully crafted luxury environment. Built on trust, warmth, and the belief that persistence over noise creates something that truly endures."</p>
-        </div>
-        <p class="ab-body">From the early days of simple requirements to today's highly advanced and creative demands, we have continuously evolved with the industry. Our goal is to blend luxury with emotion, structure with comfort, and innovation with familiarity.</p>
         <div class="ab-footer">
           <div class="ab-origin">
             <div class="ab-origin-line"></div>
-            <span class="ab-origin-year">Est. 2009</span>
-            <span class="ab-origin-city">Mumbai, Maharashtra</span>
+            <span class="ab-origin-year" style="font-weight:700;">Est. 2009</span>
+            <span class="ab-origin-city" style="font-weight:700;">Mumbai, Maharashtra</span>
           </div>
-          <button class="about-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
-            Book Your Van
+          <a href="about.html" class="about-cta" onclick="goTo('about.html');return false;">
+            Read More
             <svg class="about-cta-arrow" viewBox="0 0 24 24" width="16" height="16" stroke-width="2" stroke="currentColor" fill="none"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </button>
+          </a>
         </div>
       </div>
 
