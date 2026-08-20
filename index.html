@@ -254,7 +254,7 @@
        .story-sticky / the fleet lamp header). */
     .mobile-hero-static {
       display: block; position: relative;
-      height: 100svh; min-height: 560px; overflow: hidden;
+      height: 90svh; min-height: 540px; overflow: hidden;
       background:
         radial-gradient(ellipse 90% 55% at 50% 62%, rgba(212,160,23,0.22) 0%, transparent 65%),
         radial-gradient(ellipse 70% 50% at 50% 0%, rgba(212,160,23,0.14) 0%, transparent 60%),
@@ -1274,6 +1274,11 @@
     .fp-bento-grid { grid-template-columns: 1fr 1fr; grid-template-rows: none; grid-auto-rows: 280px; }
     .fp-bento-celebrity { grid-column: span 2; }
     .fp-bento-toilet, .fp-bento-double, .fp-bento-triple { grid-column: span 1; }
+    /* :hover never fires on touch, so mobile was stuck at the dim 0.22
+       base opacity meant only for the non-hovered desktop state -- bump
+       it up so the background photo actually reads on mobile. */
+    .fp-bento-photo.is-active { opacity: 0.55; }
+    .fp-bento-overlay { background: linear-gradient(to bottom, rgba(6,4,2,0.35) 0%, rgba(6,4,2,0.2) 22%, rgba(6,4,2,0.75) 60%, rgba(6,4,2,0.95) 100%); }
   }
   @media (max-width: 540px) {
     .fp-bento-grid { grid-template-columns: 1fr; grid-auto-rows: auto; gap: 10px; }
