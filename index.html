@@ -1086,23 +1086,23 @@
   .mtc-wrap { display: none; }
   @media (max-width: 767px) {
     .testi-cols { display: none; }
-    .mtc-wrap { display: block; position: relative; height: 250px; margin-top: 20px; }
+    .mtc-wrap { display: block; position: relative; height: 220px; margin-top: 20px; }
     .mtc-stage { position: relative; width: 100%; height: 100%; }
     .mtc-card {
       position: absolute; left: 50%; top: 50%;
-      width: calc(100% - 8px); max-width: 340px;
+      width: calc(100% - 8px); max-width: 290px;
       background: linear-gradient(155deg, rgba(28,20,9,0.92), rgba(10,8,4,0.97));
-      border: 1px solid rgba(212,160,23,0.16); border-radius: 18px;
-      padding: 18px 16px; box-shadow: 0 20px 44px rgba(0,0,0,0.5);
+      border: 1px solid rgba(212,160,23,0.16); border-radius: 16px;
+      padding: 14px 13px; box-shadow: 0 16px 36px rgba(0,0,0,0.5);
       transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease, filter 0.3s ease;
       touch-action: pan-y;
     }
-    .mtc-quote-mark { font-family: "Marcellus", serif; font-size: 2rem; color: rgba(212,160,23,0.28); line-height: 0.6; margin-bottom: 5px; }
-    .mtc-body { color: rgba(255,255,255,0.72); line-height: 1.6; font-size: 0.8rem; font-style: italic; }
-    .mtc-foot { display: flex; align-items: center; gap: 10px; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(212,160,23,0.1); }
-    .mtc-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, rgba(212,160,23,0.25), rgba(185,28,28,0.25)); border: 1.5px solid rgba(212,160,23,0.35); display: flex; align-items: center; justify-content: center; color: var(--gold); font-family: "Marcellus", serif; font-size: 0.7rem; font-weight: 600; flex-shrink: 0; }
-    .mtc-name { font-weight: 600; color: #fff; font-size: 0.78rem; }
-    .mtc-role { font-size: 0.64rem; color: rgba(255,255,255,0.42); margin-top: 2px; }
+    .mtc-quote-mark { font-family: "Marcellus", serif; font-size: 1.7rem; color: rgba(212,160,23,0.28); line-height: 0.6; margin-bottom: 4px; }
+    .mtc-body { color: rgba(255,255,255,0.72); line-height: 1.5; font-size: 0.72rem; font-style: italic; }
+    .mtc-foot { display: flex; align-items: center; gap: 8px; margin-top: 11px; padding-top: 10px; border-top: 1px solid rgba(212,160,23,0.1); }
+    .mtc-avatar { width: 27px; height: 27px; border-radius: 50%; background: linear-gradient(135deg, rgba(212,160,23,0.25), rgba(185,28,28,0.25)); border: 1.5px solid rgba(212,160,23,0.35); display: flex; align-items: center; justify-content: center; color: var(--gold); font-family: "Marcellus", serif; font-size: 0.62rem; font-weight: 600; flex-shrink: 0; }
+    .mtc-name { font-weight: 600; color: #fff; font-size: 0.7rem; }
+    .mtc-role { font-size: 0.58rem; color: rgba(255,255,255,0.42); margin-top: 2px; }
     .mtc-nav { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 24px; }
     .mtc-btn {
       width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
@@ -2817,7 +2817,7 @@
       ctx.filter = 'blur(50px) brightness(0.55)';
       ctx.drawImage(img,(canvas.width-img.naturalWidth*sBg)/2,(canvas.height-img.naturalHeight*sBg)/2,img.naturalWidth*sBg,img.naturalHeight*sBg);
       ctx.restore();
-      var s = Math.min(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight);
+      var s = Math.min(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight) * 1.35;
       ctx.drawImage(img,(canvas.width-img.naturalWidth*s)/2,(canvas.height-img.naturalHeight*s)/2,img.naturalWidth*s,img.naturalHeight*s);
     } else {
       var s2 = Math.max(canvas.width/img.naturalWidth, canvas.height/img.naturalHeight);
