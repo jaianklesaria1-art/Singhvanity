@@ -1080,8 +1080,43 @@
   .tcard-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, rgba(212,160,23,0.25), rgba(185,28,28,0.25)); border: 1.5px solid rgba(212,160,23,0.35); display: flex; align-items: center; justify-content: center; color: var(--gold); font-family: "Marcellus", serif; font-size: 0.82rem; font-weight: 600; flex-shrink: 0; }
   .tcard-name { font-weight: 600; color: #fff; font-size: 0.88rem; }
   .tcard-role { font-size: 0.74rem; color: rgba(255,255,255,0.42); margin-top: 2px; }
-  @media (max-width: 767px) { .testi-col:nth-child(2), .testi-col:nth-child(3) { display: none; } .testi-col { flex: 0 0 min(320px, 90vw); } }
   @media (min-width: 768px) and (max-width: 1023px) { .testi-col:nth-child(3) { display: none; } .testi-col { flex: 0 0 300px; } }
+
+  /* ── MOBILE TESTIMONIAL CAROUSEL — stacked cards, depth on scroll ── */
+  .mtc-wrap { display: none; }
+  @media (max-width: 767px) {
+    .testi-cols { display: none; }
+    .mtc-wrap { display: block; position: relative; height: 300px; margin-top: 48px; }
+    .mtc-stage { position: relative; width: 100%; height: 100%; }
+    .mtc-card {
+      position: absolute; left: 50%; top: 50%;
+      width: calc(100% - 8px); max-width: 420px;
+      background: linear-gradient(155deg, rgba(28,20,9,0.92), rgba(10,8,4,0.97));
+      border: 1px solid rgba(212,160,23,0.16); border-radius: 20px;
+      padding: 24px 22px; box-shadow: 0 24px 56px rgba(0,0,0,0.5);
+      transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease, filter 0.3s ease;
+      touch-action: pan-y;
+    }
+    .mtc-quote-mark { font-family: "Marcellus", serif; font-size: 2.4rem; color: rgba(212,160,23,0.28); line-height: 0.6; margin-bottom: 6px; }
+    .mtc-body { color: rgba(255,255,255,0.72); line-height: 1.68; font-size: 0.9rem; font-style: italic; }
+    .mtc-foot { display: flex; align-items: center; gap: 12px; margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(212,160,23,0.1); }
+    .mtc-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, rgba(212,160,23,0.25), rgba(185,28,28,0.25)); border: 1.5px solid rgba(212,160,23,0.35); display: flex; align-items: center; justify-content: center; color: var(--gold); font-family: "Marcellus", serif; font-size: 0.78rem; font-weight: 600; flex-shrink: 0; }
+    .mtc-name { font-weight: 600; color: #fff; font-size: 0.85rem; }
+    .mtc-role { font-size: 0.7rem; color: rgba(255,255,255,0.42); margin-top: 2px; }
+    .mtc-nav { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 24px; }
+    .mtc-btn {
+      width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+      border: 1px solid rgba(212,160,23,0.22); background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.7); display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .mtc-btn:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); background: rgba(212,160,23,0.08); }
+    .mtc-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .mtc-btn svg { width: 15px; height: 15px; }
+    .mtc-dots { display: flex; align-items: center; gap: 6px; }
+    .mtc-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(212,160,23,0.28); border: none; padding: 0; cursor: pointer; transition: width 0.25s, background 0.25s, border-radius 0.25s; }
+    .mtc-dot.is-active { width: 20px; border-radius: 4px; background: var(--gold); }
+  }
 
   /* CTA */
   #cta { position: relative; text-align: center; padding: 140px 24px; background: #060402; overflow: hidden; }
@@ -2514,6 +2549,20 @@
       </div>
 
     </div>
+
+    <!-- MOBILE TESTIMONIAL CAROUSEL (replaces the scrolling columns on small screens) -->
+    <div class="mtc-wrap" id="mtcWrap" role="region" aria-label="Client reviews carousel">
+      <div class="mtc-stage" id="mtcStage"></div>
+      <div class="mtc-nav">
+        <button class="mtc-btn" id="mtcPrev" aria-label="Previous review" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="mtc-dots" id="mtcDots"></div>
+        <button class="mtc-btn" id="mtcNext" aria-label="Next review" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -3081,6 +3130,87 @@ document.querySelectorAll('.fp-bento-card').forEach(function(card) {
     if (hoverVideo) hoverVideo.pause();
   });
 });
+
+/* ── MOBILE TESTIMONIAL CAROUSEL — stacked cards ── */
+(function () {
+  var stage = document.getElementById('mtcStage');
+  var dotsWrap = document.getElementById('mtcDots');
+  var prevBtn = document.getElementById('mtcPrev');
+  var nextBtn = document.getElementById('mtcNext');
+  if (!stage) return;
+
+  var reviews = [
+    { name: 'Ravi Kumar', role: 'Film Producer, Mumbai', initials: 'RK', body: 'The Celebrity Vanity Van exceeded every expectation. Our lead actress was thrilled — the Hollywood lighting, the space, everything was immaculate. We’ll rebook for every future shoot.' },
+    { name: 'Neha Sharma', role: 'TV Producer, Mumbai', initials: 'NS', body: 'Three consecutive seasons and Singh Vanity has never let us down once. The consistency, cleanliness and professionalism is unmatched.' },
+    { name: 'Priya Mehta', role: 'Event Manager, Delhi', initials: 'PM', body: 'Best vanity van we’ve ever had on set. The crew was professional throughout, everything set up before we arrived — immaculate interiors, zero hassle.' },
+    { name: 'Vikram Singh', role: 'Celebrity Manager, Delhi', initials: 'VS', body: 'My celebrity clients have the highest standards and Singh Vanity met every single one. The gold marble bathroom, the velvet lounge — genuinely five-star on wheels.' },
+    { name: 'Sunita Gupta', role: 'Wedding Client, Jaipur', initials: 'SG', body: 'Booked the Celebrity Van for our daughter’s sangeet. The Hollywood lighting, velvet sofas, the way the crew managed everything — just seamless. Absolute 5 stars.' },
+    { name: 'Rahul Mehta', role: 'Ad Film Director, Mumbai', initials: 'RM', body: 'Last-minute booking for a major ad film and Singh Vanity delivered within hours — fully staffed, spotless, exactly as promised. They saved our entire shoot that day.' }
+  ];
+
+  var cards = reviews.map(function (r) {
+    var card = document.createElement('figure');
+    card.className = 'mtc-card';
+    card.innerHTML =
+      '<div class="mtc-quote-mark">“</div>' +
+      '<p class="mtc-body">' + r.body + '</p>' +
+      '<figcaption class="mtc-foot">' +
+        '<div class="mtc-avatar">' + r.initials + '</div>' +
+        '<div><div class="mtc-name">' + r.name + '</div><div class="mtc-role">' + r.role + '</div></div>' +
+      '</figcaption>';
+    stage.appendChild(card);
+    return card;
+  });
+
+  var dots = reviews.map(function (_, i) {
+    var dot = document.createElement('button');
+    dot.className = 'mtc-dot';
+    dot.type = 'button';
+    dot.setAttribute('aria-label', 'Go to review ' + (i + 1));
+    dot.addEventListener('click', function () { setActive(i); });
+    dotsWrap.appendChild(dot);
+    return dot;
+  });
+
+  var maxIndex = reviews.length - 1;
+  var active = 0;
+
+  function clamp(v, min, max) { return Math.min(Math.max(v, min), max); }
+
+  function render() {
+    cards.forEach(function (card, i) {
+      var offset = i - active;
+      var scale = clamp(1 - offset * 0.08, 0.08, 2);
+      var y = clamp(offset * -30, -90, Infinity);
+      var passed = active > i;
+      card.style.zIndex = String(cards.length - i);
+      card.style.pointerEvents = i === active ? 'auto' : 'none';
+      card.style.transform = 'translate(-50%, -50%) translateY(' + y + 'px) scale(' + scale + ')';
+      card.style.opacity = passed ? '0' : '1';
+      card.style.filter = passed ? 'blur(2px)' : 'blur(0px)';
+    });
+    dots.forEach(function (dot, i) { dot.classList.toggle('is-active', i === active); });
+    prevBtn.disabled = active <= 0;
+    nextBtn.disabled = active >= maxIndex;
+  }
+
+  function setActive(i) { active = clamp(i, 0, maxIndex); render(); }
+
+  prevBtn.addEventListener('click', function () { setActive(active - 1); });
+  nextBtn.addEventListener('click', function () { setActive(active + 1); });
+
+  /* Swipe support */
+  var touchStartX = null;
+  stage.addEventListener('touchstart', function (e) { touchStartX = e.touches[0].clientX; }, { passive: true });
+  stage.addEventListener('touchend', function (e) {
+    if (touchStartX === null) return;
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 40) setActive(active + (dx < 0 ? 1 : -1));
+    touchStartX = null;
+  }, { passive: true });
+
+  render();
+})();
 
 /* ── MOBILE MENU ── */
 function openMobileMenu(){ document.getElementById('mobileMenu').classList.add('open'); }
