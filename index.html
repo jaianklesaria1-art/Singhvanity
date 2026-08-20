@@ -987,7 +987,19 @@
   .fi-cat--wedding .fi-cat-desc { color: rgba(255,255,255,0.58); }
   .fi-cat-cta { display: inline-flex; align-items: center; gap: 6px; margin-top: 18px; font-size: 0.8rem; font-weight: 600; color: var(--gold); background: none; border: none; padding: 0; cursor: pointer; font-family: 'Manrope',sans-serif; text-decoration: none; transition: gap 0.2s; }
   .fi-cat-cta:hover { gap: 10px; }
-  @media (max-width: 900px) { .fi-cats { grid-template-columns: 1fr 1fr; } .fi-cat--featured { grid-row: auto; } .fi-cat--wedding { grid-column: auto; } }
+  @media (max-width: 900px) {
+    .fi-cats { grid-template-columns: 1fr 1fr; }
+    .fi-cat--featured { grid-row: auto; }
+    .fi-cat--wedding { grid-column: auto; }
+    /* Cards sized ~10% down across padding/icon/type */
+    .fi-cat { padding: 25px 20px; }
+    .fi-cat-icon { width: 41px; height: 41px; border-radius: 12px; margin-bottom: 18px; }
+    .fi-cat-name { font-size: 1.17rem; margin-bottom: 9px; }
+    .fi-cat-desc { font-size: 0.74rem; }
+    .fi-cat--featured .fi-cat-icon { width: 50px; height: 50px; margin-bottom: 22px; }
+    .fi-cat--featured .fi-cat-name { font-size: 1.53rem; }
+    .fi-cat--featured .fi-cat-desc { font-size: 0.79rem; }
+  }
   @media (max-width: 520px) { .fi-cats { grid-template-columns: 1fr; } .fi-cat--wedding { grid-column: auto; } }
 
   /* Scrolling rows block */
