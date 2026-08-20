@@ -247,11 +247,10 @@
      for its own scroll-driven product pages) -- desktop keeps the full
      #story-1 scroll animation untouched. */
   .mobile-hero-static { display: none; }
+  /* Static mobile hero disabled -- restored the scroll-driven canvas
+     animation (#story-1) on mobile to match desktop. Block below kept as
+     a CSS comment (not deleted) in case this needs reverting again.
   @media (max-width: 900px) {
-    #story-1 { display: none; }
-    /* Van cutout on its own, no background photo -- just the site's
-       signature gold ambient glow behind it (same gradient as
-       .story-sticky / the fleet lamp header). */
     .mobile-hero-static {
       display: block; position: relative;
       height: 100svh; min-height: 560px; overflow: hidden;
@@ -284,6 +283,7 @@
       text-decoration: none; box-shadow: 0 8px 28px rgba(212,160,23,0.35);
     }
   }
+  */
 
   /* ── DESKTOP/ROTATE HINT POPUP (mobile only) ── */
   .rotate-hint-overlay { display: none; }
@@ -2774,9 +2774,6 @@
      pinned hero section mid-scroll — causing the canvas to jump/zoom and the
      navbar dark-mode toggle to misfire. Ignore those resize events on mobile. */
   ScrollTrigger.config({ ignoreMobileResize: true });
-  /* Mobile shows the static .mobile-hero-static block instead (see CSS/HTML
-     above) -- skip loading all 26 frames and the scroll-scrub entirely. */
-  if (window.matchMedia('(max-width: 900px)').matches) return;
   var N = 26;
   var canvas  = document.getElementById('s1-canvas');
   var ctx     = canvas.getContext('2d');
