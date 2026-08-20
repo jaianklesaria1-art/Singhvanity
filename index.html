@@ -2788,8 +2788,14 @@
   var cur = 0, loaded = 0;
 
   function size() {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
+    /* Backing store must match physical pixels, not CSS pixels, or the
+       browser upscales a lower-res buffer and everything looks soft --
+       especially noticeable on retina-class phone screens. draw()'s
+       object-fit math is already resolution-agnostic (works off
+       canvas.width/height directly), so no ctx.scale() needed. */
+    var dpr = Math.min(window.devicePixelRatio || 1, 3);
+    canvas.width  = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
     draw(cur);
   }
   window.addEventListener('resize', size, { passive:true });
